@@ -1,0 +1,15 @@
+<?php
+$this->title = "Usuń pozycje!";
+$this->headTitle($this->title);
+?>
+<p>Czy na pewno chcesz pozbawić naszej armi uzbrojenia<br>
+	<strong><?php echo $this->escape($this->album['name']); ?></strong>
+
+</p>
+<form action="<?php echo $this->url(array('action' => 'delete')); ?>" method="post">
+	<div>
+		<input type="hidden" name="id" value="<?php echo $this->album['id']; ?>" />
+		<input type="submit" name="del" class="btn btn-danger p-2" value="Tak, to złom" />
+		<input type="submit" name="del" class="btn btn-success p-2" value="Zmieniam zdanie!" />
+	</div>
+</form>

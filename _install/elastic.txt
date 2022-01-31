@@ -1,0 +1,13 @@
+PUT http://localhost:9200/products
+
+{
+    "acknowledged": true,
+    "shards_acknowledged": true,
+    "index": "products"
+}
+
+POST http://localhost:9200/products/_doc/123
+
+{
+    ...
+}
