@@ -51,16 +51,18 @@ class ProductController extends Zend_Controller_Action
                 $tax = $form->getValue('tax');
                 $status = $form->getValue('status');
                 $products = new Application_Model_DbTable_Products();
-                $products->updateProduct($id, $name, $description, $price, $tax, $status);
+                $save_status = $products->updateProduct($id, $name, $description, $price, $tax, $status);
 
-                $query = [
-                    'name' => $name,
-                    'description' => $description,
-                    'price' => $price,
-                    'tax' => $tax,
-                    'status' => $status
-                ];
-                $this->elastic->postProduct($query, $id);
+                if ($save_status == true) {
+                    $query = [
+                        'name' => $name,
+                        'description' => $description,
+                        'price' => $price,
+                        'tax' => $tax,
+                        'status' => $status
+                    ];
+                    $this->elastic->postProduct($query, $id);
+                }
 
                 $this->_helper->redirector('index');
             } else {
@@ -93,14 +95,16 @@ class ProductController extends Zend_Controller_Action
                 $products = new Application_Model_DbTable_Products();
                 $id = $products->addProduct($name, $description, $price, $tax, $status);
 
-                $query = [
-                    'name' => $name,
-                    'description' => $description,
-                    'price' => $price,
-                    'tax' => $tax,
-                    'status' => $status
-                ];
-                $this->elastic->postProduct($query, $id);
+                if ((int)$id != 0) {
+                    $query = [
+                        'name' => $name,
+                        'description' => $description,
+                        'price' => $price,
+                        'tax' => $tax,
+                        'status' => $status
+                    ];
+                    $this->elastic->postProduct($query, $id);
+                }
 
                 $this->_helper->redirector('index');
             } else {
@@ -118,9 +122,12 @@ class ProductController extends Zend_Controller_Action
             if ($del == 'Tak, to złom') {
                 $id = $this->getRequest()->getPost('id');
                 $product = new Application_Model_DbTable_Products();
-                $product->deleteProduct($id);
+                $status = $product->deleteProduct($id);
 
-                $this->elastic->deleteProduct($id);
+                if ($status === true) {
+                    $this->elastic->deleteProduct($id);
+                }
+                
             }
             $this->_helper->redirector('index');
         } else {
