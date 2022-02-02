@@ -53,15 +53,15 @@ class ProductController extends Zend_Controller_Action
                 $products = new Application_Model_DbTable_Products();
                 $save_status = $products->updateProduct($id, $name, $description, $price, $tax, $status);
 
-                if ($save_status == true) {
-                    $query = [
+                if ($save_status == 1) {
+                    $params = [
                         'name' => $name,
                         'description' => $description,
                         'price' => $price,
                         'tax' => $tax,
                         'status' => $status
                     ];
-                    $this->elastic->postProduct($query, $id);
+                    $this->elastic->updateProduct($params, $id);
                 }
 
                 $this->_helper->redirector('index');
@@ -124,7 +124,7 @@ class ProductController extends Zend_Controller_Action
                 $product = new Application_Model_DbTable_Products();
                 $status = $product->deleteProduct($id);
 
-                if ($status === true) {
+                if ($status == 1) {
                     $this->elastic->deleteProduct($id);
                 }
                 

@@ -45,10 +45,44 @@ class Elasticsearch_Elastic
             }
         }
     }
-
-    public function postProduct($query, $id)
+    
+    public function updateProduct($params, $id)
     {
-        $results = $this->post($query, $id, 'products');
+        $params = [
+            'index' => 'products',
+            'type' => '_doc',
+            'id'    => $id,
+            'body'  => [
+                'doc' => $params
+            ],
+            'client' => [
+                'curl' => [
+                    CURLOPT_HTTPHEADER => [
+                        'Content-type: application/json',
+                    ]
+                ]
+            ]
+        ];
+        $results = $this->client->update($params);
+        return $results;
+    }
+
+    public function postProduct($params, $id)
+    {
+        $params = [
+            'index' => 'products',
+            'id'    => $id,
+            'type' => '_doc',
+            'body'  => $params,
+            'client' => [
+                'curl' => [
+                    CURLOPT_HTTPHEADER => [
+                        'Content-type: application/json',
+                    ]
+                ]
+            ]
+        ];
+        $results = $this->client->index($params);
         return $results;
     }
 
