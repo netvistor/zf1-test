@@ -2,6 +2,7 @@
 
 class ProductController extends Zend_Controller_Action
 {
+    private $elastic;
 
     public function init()
     {

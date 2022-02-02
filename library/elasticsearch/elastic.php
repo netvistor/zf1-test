@@ -1,22 +1,41 @@
 <?php
+use Elasticsearch\ClientBuilder;
 
 class Elasticsearch_Elastic
 {
+    /**
+     * Instance of Elasticsearch
+     */
+    private $client;
+
+    public function __construct()
+    {
+        $this->client = Elasticsearch\ClientBuilder::create()
+            ->setHosts(['http://localhost:9200'])
+            ->build();
+    }
 
     public function searchProduct($text)
     {
-        $query = [
-            'query' => [
-                'multi_match' => [
-                    'query' => (string)$text,
-                    'fields' => [ "name", "description" ],
-                ],
+        $params = [
+            'index' => 'products',
+            'body'  => [
+                'query' => [
+                    'multi_match' => [
+                        'query' => (string)$text,
+                        'fields' => [ "name", "description" ],
+                    ]
+                ]
             ],
-            "from" => 0,
-            'size' => 100,
+            'client' => [
+                'curl' => [
+                    CURLOPT_HTTPHEADER => [
+                        'Content-type: application/json',
+                    ]
+                ]
+            ]
         ];
-        //or URL http://localhost:9200/product/_search?q=name:samolot&pretty
-        $results = $this->get('products', $query);
+        $results = $this->client->search($params);
 
         if (isset($results["hits"])) {
             if ((int)$results["hits"]["total"]["value"] > 0) {
@@ -35,8 +54,19 @@ class Elasticsearch_Elastic
 
     public function deleteProduct($id)
     {
-        $results = $this->delete($id, 'products');
-        return $results;
+        $params = [
+            'index' => 'products',
+            'id'    => $id,
+            'client' => [
+                'curl' => [
+                    CURLOPT_HTTPHEADER => [
+                        'Content-type: application/json',
+                    ]
+                ]
+            ]
+        ];
+        $response = $this->client->delete($params);
+        return $response;
     }
 
     private function get($index, $query)

@@ -36,12 +36,12 @@ class Application_Model_DbTable_Products extends Zend_Db_Table_Abstract
             'tax' => $tax,
             'status' => $status,
         );
-        $this->update($data, 'id = ' . (int)$id);
+        return $this->update($data, 'id = ' . (int)$id);
     }
 
     public function deleteProduct($id)
     {
-        $this->delete('id =' . (int)$id);
+        return $this->delete('id =' . (int)$id);
     }
 
     public function countProduct()

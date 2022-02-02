@@ -7,7 +7,6 @@ class IndexController extends Zend_Controller_Action
     public function init()
     {
         $this->view->title = "Startujemy...";
-        $this->elastic = new Elasticsearch_Elastic();
     }
 
     public function indexAction()

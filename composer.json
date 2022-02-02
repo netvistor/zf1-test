@@ -1,0 +1,12 @@
+{
+    "require": {
+        "zendframework/zendframework1": "^1.12",
+        "elasticsearch/elasticsearch": "~2.0@beta"
+    },
+    "autoload": {
+        "classmap": [
+            "application/",
+            "library/Application/"
+         ]
+    }
+}
